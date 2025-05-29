@@ -4,6 +4,7 @@ import UploadFormInput from "./upload-form-input";
 import { useUploadThing } from "@/utils/uploadthing";
 import { toast } from "sonner";
 import { generatePdfSummary } from "@/actions/upload-actions";
+import { useRef, useState } from "react";
 
 const schema = z.object({
   file: z
@@ -37,47 +38,73 @@ const UploadForm = () => {
     },
   });
 
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("form submitted");
-    const formData = new FormData(e.currentTarget); //digital envelope that contains all the data from the form's fields
-    const file = formData.get("file") as File; //we called the 'file' as 'file' in the form input component
+    try {
+      console.log("form submitted");
+      setIsLoading(true);
+      const formData = new FormData(e.currentTarget); //digital envelope that contains all the data from the form's fields
+      const file = formData.get("file") as File; //we called the 'file' as 'file' in the form input component
 
-    //validate the fields
-    const validatedFields = schema.safeParse({ file }); // safeParse checks if the data matches the schema and returns an object with success or error
+      //validate the fields
+      const validatedFields = schema.safeParse({ file }); // safeParse checks if the data matches the schema and returns an object with success or error
 
-    if (!validatedFields.success) {
-      console.log(
-        validatedFields.error.flatten().fieldErrors.file?.[0] ?? "Inavlid File"
-      );
-      toast.error("Something went wrong  with the file upload.");
+      if (!validatedFields.success) {
+        console.log(
+          validatedFields.error.flatten().fieldErrors.file?.[0] ??
+            "Inavlid File"
+        );
+        toast.error("Something went wrong  with the file upload.");
+        setIsLoading(false);
 
-      return;
+        return;
+      }
+
+      toast.loading("Almost there! We are uploading your PDF");
+
+      //schema with zod: done above ^
+
+      //upload the file to upload-thing
+      const response = await startUpload([file]);
+      if (!response) {
+        toast.error("Something went wrong! Please use a different file");
+        setIsLoading(false);
+        return;
+      }
+
+      toast.loading("Hang tight! Our AI is reading through your document");
+
+      //parse the pdf using langchain
+      const result = await generatePdfSummary(response);
+      console.log("SUMMARY:", { result });
+
+      const { data = null, message = null } = result || {};
+      if (data) {
+        toast.loading("Soo close! We are saving your summary!");
+
+        if (data.summary) {
+          //save the summary to the Database
+        }
+      }
+      //summarize the pdf using ai
+      //save the summary to the db
+      //redirect to the [id] summary page
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error occured:", error);
+      formRef.current?.reset();
     }
-
-    toast.loading("Almost there! We are uploading your PDF");
-
-    //schema with zod: done above ^
-
-    //upload the file to upload-thing
-    const response = await startUpload([file]);
-    if (!response) {
-      toast.error("Something went wrong! Please use a different file");
-      return;
-    }
-
-    toast.loading("Hang tight! Our AI is reading through your document");
-
-    //parse the pdf using langchain
-    const summary = await generatePdfSummary(response);
-    console.log("SUMMARY:", { summary });
-    //summarize the pdf using ai
-    //save the summary to the db
-    //redirect to the [id] summary page
   };
   return (
     <div className="flex flex-col gap-8 w-full max-w-2xl mx-auto">
-      <UploadFormInput onSubmit={handleSubmit} />
+      <UploadFormInput
+        isLoading={isLoading}
+        ref={formRef}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };
