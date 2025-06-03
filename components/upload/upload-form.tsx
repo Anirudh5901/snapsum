@@ -37,8 +37,8 @@ const UploadForm = () => {
       console.error("error occured while uploading", err);
       toast.error("Error occured while uploading the file");
     },
-    onUploadBegin: (file) => {
-      console.log("upload has begun for", file);
+    onUploadBegin: (data) => {
+      console.log("upload has begun for", data);
     },
   });
 
@@ -73,18 +73,21 @@ const UploadForm = () => {
       //schema with zod: done above ^
 
       //upload the file to upload-thing
-      const response = await startUpload([file]);
-      if (!response) {
+      const uploadResponse = await startUpload([file]);
+      if (!uploadResponse) {
         toast.error("Something went wrong! Please use a different file");
         setIsLoading(false);
         return;
       }
 
       toast.success("Hang tight! Our AI is reading through your document");
-
+      const uploadFileUrl = uploadResponse[0].serverData.fileUrl;
       //parse the pdf using langchain
       //summarize the pdf using ai
-      const result = await generatePdfSummary(response);
+      const result = await generatePdfSummary({
+        fileUrl: uploadFileUrl,
+        fileName: file.name,
+      });
       console.log("SUMMARY:", { result });
 
       const { data = null, message = null } = result || {};
@@ -96,7 +99,7 @@ const UploadForm = () => {
           //save the summary to the Database
           storeResult = await storePdfSummaryAction({
             summary: data.summary,
-            fileUrl: response[0].serverData.file.url,
+            fileUrl: uploadFileUrl,
             title: data.title,
             fileName: file.name,
           });
