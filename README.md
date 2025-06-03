@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SnapSummAI 📚
 
-## Getting Started
+SnapSummAI is an intelligent PDF summarization tool that transforms lengthy documents into engaging, easy-to-read summaries using AI technology. Built with Next.js and powered by advanced natural language processing.
 
-First, run the development server:
+## ✨ Features
+
+- 🚀 Instant PDF uploads and processing
+- 🤖 AI-powered document summarization
+- 📱 Responsive, modern UI design
+- 📑 Interactive summary viewer with section navigation
+- 🔒 Secure user authentication
+- 💾 Cloud storage for summaries
+- ⚡ Real-time processing status updates
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL with TypeORM
+- **Authentication**: Clerk
+- **File Storage**: UploadThing
+- **AI Processing**: LangChain
+- **Styling**: Tailwind CSS, Shadcn UI
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- PostgreSQL database
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/snapsum.git
+cd snapsum
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+```bash
+cp .env.example .env.local
+```
+
+4. Configure your environment variables:
+
+```env
+DATABASE_URL=your_postgresql_connection_string
+UPLOADTHING_SECRET=your_uploadthing_secret
+UPLOADTHING_APP_ID=your_uploadthing_app_id
+CLERK_SECRET_KEY=your_clerk_secret_key
+CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+```
+
+5. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌐 Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Sign in using your account
+2. Upload a PDF file (max 20MB)
+3. Wait for the AI to process and generate the summary
+4. View your interactive summary with sectioned content
+5. Navigate through different sections using the progress bar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📝 Features in Detail
 
-## Learn More
+- **Smart Summarization**: Automatically extracts key points and organizes them into sections
+- **Progress Tracking**: Visual feedback during upload and processing
+- **Interactive Viewer**: Easy navigation between summary sections
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Upload Limits**: Managed upload quotas for optimal performance
 
-To learn more about Next.js, take a look at the following resources:
+## 🔒 Security
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Secure file handling with UploadThing
+- Authentication powered by Clerk
+- Protected API routes
+- Secure database connections
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤝 Contributing
 
-## Deploy on Vercel
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📄 License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
