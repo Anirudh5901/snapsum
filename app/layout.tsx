@@ -35,7 +35,6 @@ export default function RootLayout({
           <div className="relative flex flex-col justify-evenly min-h-screen bg-slate-950 text-white">
             <Header />
             <main className="flex-1">{children}</main>
-            <Footer />
             <Toaster />
           </div>
         </body>
